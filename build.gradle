@@ -15,9 +15,15 @@ repositories {
     mavenCentral()
 }
 
+repositories {
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
 configurations {
     compile.exclude module: "spring-boot-starter-tomcat"
 }
+
+ext['spring-web.version'] = '6.1.3-SNAPSHOT'
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web') {
@@ -26,8 +32,8 @@ dependencies {
 
     implementation 'io.projectreactor.netty:reactor-netty'
     implementation "org.springframework.boot:spring-boot-starter-jetty"
-    implementation group: 'org.springframework', name: 'spring-webflux', version: '6.0.12'
-
+    implementation 'org.springframework:spring-webflux'
+    implementation group: 'org.springframework', name: 'spring-web', version: '6.1.3-SNAPSHOT'
     testImplementation "io.projectreactor:reactor-test"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

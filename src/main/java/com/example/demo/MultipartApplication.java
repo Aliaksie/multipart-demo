@@ -121,29 +121,15 @@ public class MultipartApplication {
         @ExceptionHandler({MultipartException.class})
         public ResponseEntity<ErrorResponse> handleMultipartException(final HttpServletRequest request,
                                                                       final MultipartException e) {
-            final Throwable rootCause = e.getRootCause();
-            String msg = Optional.ofNullable(rootCause).map(Throwable::getMessage).orElse(null);
-            if (msg == null) {
-                return this.error(HttpStatus.BAD_REQUEST, request, e.getMessage());
-            }
-
-            msg = msg.toLowerCase();
-            if (hasLengthError(msg) && msg.contains("exceed")) {
-                return tooLarge(request, new MaxUploadSizeExceededException(-1, rootCause));
-            }
-
             return this.error(HttpStatus.BAD_REQUEST, request, e.getMessage());
         }
 
-        private static boolean hasLengthError(final String msg) {
-            return msg.contains("size") || msg.contains("max length");
-        }
 
-//        @ExceptionHandler({MaxUploadSizeExceededException.class})
-//        public ResponseEntity<ErrorResponse> handleMultipartMaxUploadSizeExceededException(final HttpServletRequest request,
-//                                                                                           final MaxUploadSizeExceededException e) {
-//            return this.tooLarge(request, e);
-//        }
+        @ExceptionHandler({MaxUploadSizeExceededException.class})
+        public ResponseEntity<ErrorResponse> handleMultipartMaxUploadSizeExceededException(final HttpServletRequest request,
+                                                                                           final MaxUploadSizeExceededException e) {
+            return this.tooLarge(request, e);
+        }
 
         private ResponseEntity<ErrorResponse> tooLarge(final HttpServletRequest request, final MultipartException e) {
             return this.error(HttpStatus.PAYLOAD_TOO_LARGE, request, e.getMessage());
